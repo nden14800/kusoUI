@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>kusoUI - The Final Edition Ver.8.0</title>
+    <title>kusoUI - The Final Edition Ver.8.2</title>
     <!-- Google Fonts: ふざけたフォント -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -528,30 +528,41 @@
             width: 1px; height: 1px; background: red; border: none; padding: 0; position: absolute; cursor: crosshair;
         }
 
-        /* Windows 11 BSOD */
+        /* Windows 11 最新BSOD (Black Screen of Death) */
         #fake-bsod {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            /* Windows 11 Blue: #0078D7 is classic, usually slightly darker/modern. */
-            background-color: #0078D7; 
+            /* 画像と同じ完全な黒背景 */
+            background-color: #000000; 
             color: white; z-index: 999999;
-            padding: 100px;
-            font-family: 'Segoe UI', 'SegoeUI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            display: none;
+            /* 中央配置 */
+            display: none; /* JSでflexに変更 */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: 'Segoe UI', 'Meiryo', sans-serif;
             cursor: none;
+            user-select: none;
         }
-        .bsod-face { font-size: 100px; margin-bottom: 20px; font-weight: 300; }
-        .bsod-text { font-size: 24px; margin-bottom: 40px; line-height: 1.4; font-weight: 300; }
-        .bsod-progress { font-size: 24px; margin-bottom: 40px; font-weight: 300; }
-        .bsod-footer { display: flex; align-items: flex-start; gap: 20px; }
-        .bsod-qr { width: 100px; height: 100px; background: white; padding: 5px; }
-        .bsod-info { font-size: 14px; line-height: 1.6; }
-        .bsod-info a { color: white; text-decoration: none; }
-
-        @media (max-width: 600px) {
-            #fake-bsod { padding: 40px 20px; }
-            .bsod-face { font-size: 80px; }
-            .bsod-text { font-size: 18px; }
-            .bsod-footer { flex-direction: column; }
+        
+        .bsod-text-main {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+        
+        .bsod-progress-val {
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+        
+        .bsod-bottom-info {
+            position: absolute;
+            bottom: 12%; /* 画像の位置に合わせて調整 */
+            font-size: 0.8rem;
+            color: #cccccc;
+            text-align: center;
+            line-height: 1.6;
         }
 
     </style>
@@ -613,23 +624,18 @@
         <button class="btn-fake-link" onclick="showNotification('設定画面を開けませんでした', 'error')">設定をカスタマイズする（非推奨）</button>
     </div>
 
-    <!-- 偽ブルースクリーン (Windows 11 Style) -->
+    <!-- 偽ブルースクリーン (Windows 11 Latest/Black Screen Style) -->
+    <!-- 画像の構成に合わせてシンプル化 -->
     <div id="fake-bsod" onclick="location.reload()">
-        <div class="bsod-face">:(</div>
-        <div class="bsod-text">
-            Your device ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.
+        <div class="bsod-text-main">
+            Your device ran into a problem and needs to restart.
         </div>
-        <div class="bsod-progress">0% complete</div>
-        <div class="bsod-footer">
-            <div class="bsod-qr">
-                <!-- 簡易的なQRコード風の四角形 -->
-                <div style="width:100%; height:100%; background: repeating-linear-gradient(45deg, black 0, black 5px, white 5px, white 10px);"></div>
-            </div>
-            <div class="bsod-info">
-                For more information about this issue and possible fixes, visit https://www.windows.com/stopcode<br><br>
-                If you call a support person, give them this info:<br>
-                Stop code: CRITICAL_PROCESS_DIED
-            </div>
+        <div class="bsod-progress-val">
+            0% complete
+        </div>
+        <div class="bsod-bottom-info">
+            Stop code: CRITICAL_PROCESS_DIED (0xEF)<br>
+            What failed: rdbss.sys
         </div>
     </div>
 
@@ -686,7 +692,7 @@
             { id: 37, text: "Lv.37 スロット・ジェンダー選択" },
             { id: 38, text: "Lv.38 1ピクセル・ボタン" },
             { id: 39, text: "Lv.39 物理演算キーボード" },
-            { id: 40, text: "Lv.40 偽ブルースクリーン (Win11)" }
+            { id: 40, text: "Lv.40 偽ブルースクリーン (Win11最新版)" }
         ];
 
         const select = document.getElementById('scenario-select');
@@ -2035,7 +2041,7 @@
             gameArea.innerHTML = `
                 <h3><i class="bi bi-laptop"></i> 最終試練</h3>
                 <p>このボタンを押してシステムを完了させてください。</p>
-                <button onclick="document.getElementById('fake-bsod').style.display='block'" style="background:blue; color:white; width:100%; height:100px; font-size:2rem;">完了</button>
+                <button onclick="document.getElementById('fake-bsod').style.display='flex'" style="background:blue; color:white; width:100%; height:100px; font-size:2rem;">完了</button>
             `;
         }
 
