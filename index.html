@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>kusoUI - The Final Edition Ver.3.5</title>
-    <!-- Google Fonts: ふざけたフォント (Comic Neue) -->
+    <title>kusoUI - The Final Edition Ver.8.0</title>
+    <!-- Google Fonts: ふざけたフォント -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
@@ -60,21 +60,24 @@
             padding-bottom: 250px;
         }
 
-        /* タイトル */
+        /* タイトル (さらに巨大化・極太・カオス) */
         h1 {
             font-weight: 900;
-            font-size: clamp(3rem, 10vw, 7rem);
+            font-size: clamp(4rem, 18vw, 10rem);
             margin-bottom: 30px;
             text-align: center;
-            text-shadow: 4px 4px 0px var(--danger), 8px 8px 0px rgba(0,0,0,0.2);
-            line-height: 1.1;
+            text-shadow: 6px 6px 0px var(--danger), 12px 12px 0px rgba(0,0,0,0.2);
+            line-height: 0.9;
             color: var(--text-color);
             animation: jitter 0.2s infinite;
+            letter-spacing: -5px;
         }
         @keyframes jitter {
-            0% { transform: translate(0,0); }
-            50% { transform: translate(1px, 1px); }
-            100% { transform: translate(-1px, -1px); }
+            0% { transform: translate(0,0) rotate(0deg); }
+            25% { transform: translate(2px, 2px) rotate(1deg); }
+            50% { transform: translate(-2px, -2px) rotate(-1deg); }
+            75% { transform: translate(1px, -1px) rotate(0deg); }
+            100% { transform: translate(0,0) rotate(0deg); }
         }
 
         /* UI コンテナ */
@@ -113,7 +116,7 @@
         }
 
         /* 共通ボタン */
-        button:not(.video-control):not(.notification-close) {
+        button:not(.video-control):not(.notification-close):not(.calc-btn):not(.pixel-btn) {
             margin: 5px;
             padding: 12px 20px;
             cursor: pointer;
@@ -177,12 +180,12 @@
         .win11-notification {
             pointer-events: auto;
             /* Mica/Acrylic風 */
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.1);
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             padding: 16px;
             width: 100%;
             color: #1a1a1a;
@@ -197,12 +200,10 @@
             animation: win11SlideOut 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
         }
 
-        /* スライドイン: 右または下からふわっと */
         @keyframes win11SlideIn {
             0% { opacity: 0; transform: translateX(100%) scale(0.95); }
             100% { opacity: 1; transform: translateX(0) scale(1); }
         }
-        /* スライドアウト: 右へフェードアウト */
         @keyframes win11SlideOut {
             0% { opacity: 1; transform: translateX(0); }
             100% { opacity: 0; transform: translateX(100%); }
@@ -346,7 +347,6 @@
             justify-content: center;
         }
         .skip-circle-svg { transform: rotate(-90deg); width: 40px; height: 40px; }
-        /* 右上の円: 白く丸みを帯びたスタイル */
         .skip-circle-bg { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 4; }
         .skip-circle-progress { 
             fill: none; 
@@ -454,6 +454,106 @@
             display: none;
         }
 
+        /* 電卓用 */
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; }
+        .calc-btn {
+            padding: 15px; background: #eee; border: 2px solid #333; font-weight: bold; font-size: 1.2rem; cursor: pointer;
+        }
+        .calc-btn:active { background: #ccc; }
+        .calc-display {
+            width: 100%; padding: 10px; font-size: 2rem; text-align: right; background: #222; color: #0f0; font-family: 'Courier New', monospace; border: 4px inset #666; margin-bottom: 10px;
+        }
+
+        /* デジタル時計 */
+        .clock-face {
+            font-family: 'Courier New', monospace;
+            background: black;
+            color: red;
+            font-size: 4rem;
+            text-align: center;
+            padding: 20px;
+            border: 10px ridge gray;
+            text-shadow: 0 0 10px red;
+            margin: 20px 0;
+        }
+
+        /* ボール転がし用 */
+        .balance-board { width: 100%; height: 250px; background: #cce; border: 4px solid #555; position: relative; overflow: hidden; }
+        .balance-ball { width: 30px; height: 30px; background: red; border-radius: 50%; position: absolute; border: 2px solid black; }
+        .balance-hole { width: 40px; height: 40px; background: black; border-radius: 50%; position: absolute; }
+        
+        /* スクラッチ */
+        canvas#scratch-pad { border: 2px solid black; cursor: crosshair; touch-action: none; z-index: 2; position: absolute; }
+        #scratch-bg { 
+            position: absolute; top:0; left:0; width:100%; height:100%; 
+            display:flex; align-items:center; justify-content:center; 
+            font-size:2rem; font-weight:bold; color:black; background:white; 
+            overflow: hidden; z-index: 1; user-select: none;
+            filter: blur(5px);
+        }
+
+        /* 叫ぶバー */
+        .voice-bar-container { width: 100%; height: 40px; background: #333; margin: 20px 0; border: 2px solid #000; position: relative; overflow:hidden;}
+        .voice-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, lime, yellow, red); transition: width 0.05s; }
+
+        /* 鏡文字 */
+        .mirror-text { transform: scaleX(-1); display: inline-block; }
+        input.mirror-input { transform: scaleX(-1); text-align: right; }
+
+        /* マトリョーシカ */
+        .matryoshka-modal {
+            position: absolute; background: white; border: 2px solid black; padding: 10px; 
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* 落下ドロップダウン */
+        .fake-select-box {
+            width: 100%; padding: 15px; border: 4px dashed var(--danger); background: var(--bg-color); 
+            font-weight: bold; position: relative; cursor: pointer; display: flex; justify-content: space-between;
+        }
+        .falling-option {
+            position: absolute; background: white; border: 1px solid black; padding: 10px; 
+            z-index: 999; width: 200px; text-align: center; font-weight: bold;
+        }
+
+        /* 物理キーボード */
+        .physics-key {
+            display: inline-block; width: 40px; height: 40px; background: #fff; border: 1px solid #000;
+            text-align: center; line-height: 40px; margin: 2px; position: absolute; font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 1ピクセルボタン */
+        .pixel-btn {
+            width: 1px; height: 1px; background: red; border: none; padding: 0; position: absolute; cursor: crosshair;
+        }
+
+        /* Windows 11 BSOD */
+        #fake-bsod {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            /* Windows 11 Blue: #0078D7 is classic, usually slightly darker/modern. */
+            background-color: #0078D7; 
+            color: white; z-index: 999999;
+            padding: 100px;
+            font-family: 'Segoe UI', 'SegoeUI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            display: none;
+            cursor: none;
+        }
+        .bsod-face { font-size: 100px; margin-bottom: 20px; font-weight: 300; }
+        .bsod-text { font-size: 24px; margin-bottom: 40px; line-height: 1.4; font-weight: 300; }
+        .bsod-progress { font-size: 24px; margin-bottom: 40px; font-weight: 300; }
+        .bsod-footer { display: flex; align-items: flex-start; gap: 20px; }
+        .bsod-qr { width: 100px; height: 100px; background: white; padding: 5px; }
+        .bsod-info { font-size: 14px; line-height: 1.6; }
+        .bsod-info a { color: white; text-decoration: none; }
+
+        @media (max-width: 600px) {
+            #fake-bsod { padding: 40px 20px; }
+            .bsod-face { font-size: 80px; }
+            .bsod-text { font-size: 18px; }
+            .bsod-footer { flex-direction: column; }
+        }
+
     </style>
 </head>
 <body>
@@ -483,7 +583,7 @@
             <h3 style="font-size: 2rem; font-weight: bold; margin-bottom: 20px;">Welcome to Hell.</h3>
             <p class="mt-4" style="font-size: 1.1rem;">UI/UXアンチパターン博物館へようこそ。</p>
             <p>スマホでもPCでも、平等に使いにくく設計されています。</p>
-            <button onclick="showNotification('エラー：このボタンは飾りです。', 'error')" class="mt-4" style="width:100%; max-width:300px; padding: 20px; font-size: 1.2rem;"><i class="bi bi-play-fill"></i> ゲームを開始しない</button>
+            <button onclick="showNotification('エラー：そのクリックには魂がこもっていません。やり直し。', 'error')" class="mt-4" style="width:100%; max-width:300px; padding: 20px; font-size: 1.2rem;"><i class="bi bi-play-fill"></i> ゲームを開始しない</button>
         </div>
     </div>
 
@@ -513,17 +613,39 @@
         <button class="btn-fake-link" onclick="showNotification('設定画面を開けませんでした', 'error')">設定をカスタマイズする（非推奨）</button>
     </div>
 
+    <!-- 偽ブルースクリーン (Windows 11 Style) -->
+    <div id="fake-bsod" onclick="location.reload()">
+        <div class="bsod-face">:(</div>
+        <div class="bsod-text">
+            Your device ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.
+        </div>
+        <div class="bsod-progress">0% complete</div>
+        <div class="bsod-footer">
+            <div class="bsod-qr">
+                <!-- 簡易的なQRコード風の四角形 -->
+                <div style="width:100%; height:100%; background: repeating-linear-gradient(45deg, black 0, black 5px, white 5px, white 10px);"></div>
+            </div>
+            <div class="bsod-info">
+                For more information about this issue and possible fixes, visit https://www.windows.com/stopcode<br><br>
+                If you call a support person, give them this info:<br>
+                Stop code: CRITICAL_PROCESS_DIED
+            </div>
+        </div>
+    </div>
+
     <script>
         const gameArea = document.getElementById('game-area');
         let animationFrameId = null; 
         let adAnimationFrameId = null;
         let scenarioInterval = null;
+        let audioContext = null;
+        let micStream = null;
         
         // 広告表示制御フラグ
         let isAdVisible = true;
         let adRespawnTimer = null;
 
-        // シナリオ定義 (24個)
+        // シナリオ定義 (40個)
         const scenarios = [
             { id: 1, text: "Lv.1 電話番号スライダー" },
             { id: 2, text: "Lv.2 跳ね回る同意ボタン" },
@@ -539,7 +661,7 @@
             { id: 12, text: "Lv.12 現代のアプリ動画広告 (改)" },
             { id: 13, text: "Lv.13 終わらない画像認証" },
             { id: 14, text: "Lv.14 逃げるヘルプアシスタント" },
-            { id: 15, text: "Lv.15 消える利用規約" },
+            { id: 15, text: "Lv.15 消える利用規約 (速度制限)" },
             { id: 16, text: "Lv.16 終わらないアップデート" },
             { id: 17, text: "Lv.17 遅延入力チャット" },
             { id: 18, text: "Lv.18 ロシアンルーレット送信" },
@@ -548,7 +670,23 @@
             { id: 21, text: "Lv.21 ホバーで逃げる選択肢" },
             { id: 22, text: "Lv.22 バッテリードレイン警告" },
             { id: 23, text: "Lv.23 逆走プログレスバー" },
-            { id: 24, text: "Lv.24 手動スクロール広告" }
+            { id: 24, text: "Lv.24 手動スクロール広告" },
+            { id: 25, text: "Lv.25 偽電卓" },
+            { id: 26, text: "Lv.26 偽デジタル時計" },
+            { id: 27, text: "Lv.27 暴れ回るチェックボックス" },
+            { id: 28, text: "Lv.28 逆再生フォーム" },
+            { id: 29, text: "Lv.29 3.00秒ジャスト待機" },
+            { id: 30, text: "Lv.30 無理ゲーボール転がし" },
+            { id: 31, text: "Lv.31 スクラッチ認証 (解読不能)" },
+            { id: 32, text: "Lv.32 大声入力システム (実マイク)" },
+            { id: 33, text: "Lv.33 合わせ鏡パスワード" },
+            { id: 34, text: "Lv.34 マトリョーシカ・ダイアログ" },
+            { id: 35, text: "Lv.35 重力ドロップダウン" },
+            { id: 36, text: "Lv.36 自動消滅フォーム" },
+            { id: 37, text: "Lv.37 スロット・ジェンダー選択" },
+            { id: 38, text: "Lv.38 1ピクセル・ボタン" },
+            { id: 39, text: "Lv.39 物理演算キーボード" },
+            { id: 40, text: "Lv.40 偽ブルースクリーン (Win11)" }
         ];
 
         const select = document.getElementById('scenario-select');
@@ -690,7 +828,18 @@
             if(animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
             if(scenarioInterval) { clearInterval(scenarioInterval); scenarioInterval = null; }
             
+            // マイク停止
+            if(micStream) {
+                micStream.getTracks().forEach(track => track.stop());
+                micStream = null;
+            }
+            if(audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+
             document.querySelectorAll('.annoying-helper').forEach(el => el.remove());
+            document.getElementById('fake-bsod').style.display = 'none';
 
             const val = parseInt(document.getElementById('scenario-select').value);
             gameArea.innerHTML = ''; 
@@ -720,6 +869,22 @@
                 case 22: renderScenario22(); break;
                 case 23: renderScenario23(); break;
                 case 24: renderScenario24(); break;
+                case 25: renderScenario25(); break;
+                case 26: renderScenario26(); break;
+                case 27: renderScenario27(); break;
+                case 28: renderScenario28(); break;
+                case 29: renderScenario29(); break;
+                case 30: renderScenario30(); break;
+                case 31: renderScenario31(); break;
+                case 32: renderScenario32(); break;
+                case 33: renderScenario33(); break;
+                case 34: renderScenario34(); break;
+                case 35: renderScenario35(); break;
+                case 36: renderScenario36(); break;
+                case 37: renderScenario37(); break;
+                case 38: renderScenario38(); break;
+                case 39: renderScenario39(); break;
+                case 40: renderScenario40(); break;
             }
         }
 
@@ -734,7 +899,7 @@
                     <span id="phone-display" class="phone-slider-val">090-0000-0000</span>
                     <input type="range" id="phone-slider" min="0" max="99999999999" value="9000000000" step="13" style="width:100%">
                 </div>
-                <button onclick="showNotification('番号が間違っています。最初からやり直してください。', 'error')"><i class="bi bi-send"></i> 送信</button>
+                <button onclick="showNotification('エラー：この電話番号は不幸を呼ぶ数字です。', 'error')"><i class="bi bi-send"></i> 送信</button>
             `;
             const s = document.getElementById('phone-slider');
             s.addEventListener('input', (e) => { 
@@ -749,7 +914,7 @@
                 <p>本当に同意しますか？</p>
                 <button id="bouncing-btn-2" class="bouncing-btn"><i class="bi bi-check-circle"></i> 同意する</button>
             `;
-            initBouncingButton('bouncing-btn-2', () => showNotification('システムエラー: クリック判定に失敗しました。', 'error'));
+            initBouncingButton('bouncing-btn-2', () => showNotification('システムエラー：あなたのクリック速度が遅すぎて認証できませんでした。', 'error'));
         }
 
         function renderScenario3() {
@@ -761,9 +926,14 @@
                     <label style="font-weight:normal"><input type="radio" name="reason" onclick="this.checked=false"> サイトが使いにくい</label>
                     <label style="font-weight:normal"><input type="radio" name="reason" checked> 私の知能が低いので使いこなせない</label>
                 </div>
+                <!-- 入力欄追加 -->
+                <div class="input-group">
+                    <label>ご意見（入力不可）:</label>
+                    <textarea disabled placeholder="サーバーメンテナンス中のため入力できません" rows="3"></textarea>
+                </div>
                 <div class="confusing-buttons mt-20">
-                    <button class="btn-red" onclick="showNotification('キャンセルしました（アカウントは維持されます）', 'info')"><i class="bi bi-trash"></i> 削除する</button>
-                    <button class="btn-green" onclick="showNotification('エラー: 削除権限がありません', 'error')"><i class="bi bi-arrow-return-left"></i> キャンセルして戻る</button>
+                    <button class="btn-red" onclick="showNotification('キャンセルしました。賢明な判断です。', 'info')"><i class="bi bi-trash"></i> 削除する</button>
+                    <button class="btn-green" onclick="showNotification('エラー：削除リクエストはサーバーの機嫌により却下されました。', 'error')"><i class="bi bi-arrow-return-left"></i> キャンセルして戻る</button>
                 </div>
             `;
         }
@@ -809,6 +979,12 @@
                     <label>メールアドレス (全角のみ):</label>
                     <input type="text" id="zm" placeholder="ｅｘａｍｐｌｅ＠ｇｍａｉｌ．ｃｏｍ">
                 </div>
+                <!-- 携帯電話入力 -->
+                <div class="input-group">
+                    <label>携帯電話 (全角漢数字のみ使用可):</label>
+                    <input type="text" id="k-phone" placeholder="〇九〇...">
+                    <small style="color:gray;">例: 〇九〇一二三四五六七八</small>
+                </div>
                 <div class="input-group">
                     <label><i class="bi bi-clock-history"></i> 生年月日 (0001/1/1～2025/11/30):</label>
                     <div class="date-display" id="reg-date-disp" style="font-size: 1.2rem; font-weight:bold;">0001/1/1</div>
@@ -824,6 +1000,23 @@
                 }
             });
 
+            // 漢数字チェック
+            document.getElementById('k-phone').addEventListener('input', e => {
+                const allowed = "〇一二三四五六七八九";
+                let val = e.target.value;
+                let clean = "";
+                let hasError = false;
+                for(let char of val) {
+                    if(allowed.includes(char)) {
+                        clean += char;
+                    } else {
+                        hasError = true;
+                    }
+                }
+                e.target.value = clean;
+                if(hasError) showNotification("半角数字は下品です。美しい漢数字（〇一二...）のみ使用してください。", "error");
+            });
+
             document.getElementById('reg-time-slider').addEventListener('input', e => {
                 let d = new Date("0001-01-01");
                 d.setDate(d.getDate() + parseInt(e.target.value));
@@ -831,7 +1024,7 @@
                 document.getElementById('reg-date-disp').innerText = d.toLocaleDateString();
             });
 
-            initBouncingButton('bb5',()=>showNotification("サーバー応答なし: タイムアウト", 'error'));
+            initBouncingButton('bb5',()=>showNotification("データベース接続エラー：テーブルが見つからないか、脚が折れています。", 'error'));
         }
 
         function renderScenario6() { 
@@ -841,7 +1034,7 @@
                 <div class="date-display" id="ddisp" style="font-size:2rem; font-weight:bold; margin:20px 0; text-align:center;">${new Date().toLocaleDateString()}</div>
                 <div style="display:flex; justify-content:space-between;">
                     <button onclick="changeD(-1)"><i class="bi bi-arrow-left"></i> 前日</button>
-                    <button onclick="showNotification('未来の日付は選択できません','error')">翌日 <i class="bi bi-arrow-right"></i></button>
+                    <button onclick="showNotification('未来に行くにはタイムマシンが必要です。','error')">翌日 <i class="bi bi-arrow-right"></i></button>
                 </div>
             `; 
         }
@@ -877,6 +1070,7 @@
                 <p>感度が良すぎるスライダーで日付に合わせてください。<br>(0001/1/1 ～ 2025/11/30)</p>
                 <div class="date-display" id="tdisp" style="font-size:1.8rem; font-weight:bold; text-align:center;">0001/1/1</div>
                 <input type="range" id="tsl" min="0" max="${MAX_DAYS}" style="width:100%" value="0">
+                <button onclick="showNotification('日付を確定できませんでした。時空が歪んでいます。', 'error')">日付を決定</button>
             `; 
             document.getElementById('tsl').addEventListener('input',e=>{
                 let d=new Date("0001-01-01");
@@ -887,7 +1081,7 @@
         }
 
         function renderScenario9() { 
-            gameArea.innerHTML=`<h3><i class="bi bi-sliders"></i> オプション設定</h3><p>全てのスイッチをONにすると完了です（連動しています）。</p><div id="swc"></div>`; 
+            gameArea.innerHTML=`<h3><i class="bi bi-sliders"></i> オプション設定</h3><p>全てのスイッチをONにすると完了です（連動しています）。</p><div id="swc"></div><button onclick="showNotification('設定を保存できませんでした。スイッチが反抗的です。', 'error')">設定を保存</button>`; 
             for(let i=0;i<10;i++) document.getElementById('swc').innerHTML+=`
                 <div class="switch-row">
                     <span><i class="bi bi-gear-fill"></i> 設定 #${i+1}</span>
@@ -915,6 +1109,7 @@
                 <ul id="ie" style="color:var(--danger); font-size:0.9rem; list-style:inside; padding:10px;">
                     <li>5文字以上であること</li>
                 </ul>
+                <button onclick="showNotification('パスワードが脆弱すぎます。作り直してください。', 'error')">設定する</button>
             `; 
             document.getElementById('ip').addEventListener('input',e=>{
                 let v=e.target.value;
@@ -925,7 +1120,7 @@
                 if(!v.includes("Password")) msg += "<li>「Password」という文字列を含めてください</li>";
                 if(v.length % 2 !== 0) msg += "<li>文字数は偶数にしてください</li>";
                 
-                document.getElementById('ie').innerHTML = msg || "<li style='color:green'>条件を満たしていますが、サーバーエラーで保存できません。</li>";
+                document.getElementById('ie').innerHTML = msg || "<li style='color:green'>条件は満たしていますが、パスワードに哲学が感じられません。</li>";
             }); 
         }
 
@@ -936,7 +1131,7 @@
                 if(count > 20) { clearInterval(scenarioInterval); return; }
                 let div = document.createElement('div');
                 div.style.cssText = `position:absolute; left:${Math.random()*50}%; top:${Math.random()*300}px; width:150px; background:white; border:2px solid black; padding:10px; z-index:${100+count}; box-shadow:5px 5px 0 rgba(0,0,0,0.2);`;
-                div.innerHTML = `<strong>広告 ${count+1}</strong><br>閉じるボタンは偽物<br><button onclick="showNotification('閉じられません','error')"><i class="bi bi-x"></i> 閉じる</button>`;
+                div.innerHTML = `<strong>広告 ${count+1}</strong><br>閉じるボタンは偽物<br><button onclick="showNotification('エラー：この広告はあなたの人生の一部です。閉じられません。','error')"><i class="bi bi-x"></i> 閉じる</button>`;
                 gameArea.appendChild(div);
                 count++;
             }, 250); 
@@ -1020,13 +1215,7 @@
                     num.innerText = Math.ceil(current);
                     animationFrameId = requestAnimationFrame(updateSkip);
                 } else {
-                    // ここが重要：広告削除用の×ボタン
-                    // 一度削除機能が実行された後は、無効化されるようにJSで制御しているが、
-                    // 初期生成時は有効なボタンとして配置する。
                     container.innerHTML = `<div class="skip-btn-final" onclick="removeAdTemporarily()">x</div>`;
-                    
-                    // もし現在、広告が「非表示（削除中）」の状態なら、
-                    // このボタンが再生成された時点で即座に無効化状態にする必要がある
                     if(!isAdVisible) {
                         const btn = container.querySelector('.skip-btn-final');
                         btn.onclick = null;
@@ -1048,7 +1237,7 @@
                 <p>「信号機」のタイルをすべて選択してください。</p>
                 <div class="captcha-grid" id="cg"></div>
                 <button onclick="genCap()" class="mt-4"><i class="bi bi-arrow-clockwise"></i> 画像を更新</button>
-                <button onclick="showNotification('不正解です。もっとよく見てください。','error')" style="background:var(--primary);color:white">確認</button>
+                <button onclick="showNotification('不正解です。あなたはロボットの可能性が高いです。','error')" style="background:var(--primary);color:white">確認</button>
             `;
             genCap();
         }
@@ -1094,27 +1283,55 @@
                 x+=(tx-x)*0.05; y+=(ty-y)*0.05;
                 h.style.left=x+'px'; h.style.top=y+'px';
             },20);
-            h.onclick=e=>{e.stopPropagation();showNotification("アシスタントが分裂しました！", "info");spawnHelper();}
+            h.onclick=e=>{e.stopPropagation();showNotification("アシスタントが恐怖を感じて分裂しました！", "info");spawnHelper();}
         }
 
         function renderScenario15() {
-            let t="第1条 乙は甲に服従する。"; for(let i=0;i<50;i++) t+=" 同意せよ。";
+            // ちゃんとした（風の）条文を生成
+            const legalese = [
+                "甲は乙の魂を永続的に保有する権利を有する。",
+                "本サービスの使用により発生したいかなる精神的苦痛も乙の責任とする。",
+                "退会オプションは視覚的な装飾であり、機能しない。",
+                "乙の全財産は、甲がその気になれば没収可能とする。",
+                "スクロールバーの長さは乙の寿命と連動している。",
+                "本規約は、甲の気まぐれにより0.5秒ごとに改定される。",
+                "異議申し立てを行った場合、乙のデータは直ちに爆破される。",
+                "同意ボタンを押した時点で、乙は人間としての尊厳を放棄したものとみなす。"
+            ];
+            
+            let content = "";
+            for(let i=1; i<=50; i++) {
+                let clause = legalese[(i-1) % legalese.length];
+                content += `<p style="margin-bottom:15px; line-height:1.6;"><strong>第${i}条</strong><br>${clause} なお、${Math.random().toString(36).substring(7)}条項により、これは絶対である。</p>`;
+            }
+
             gameArea.innerHTML=`
-                <h3><i class="bi bi-file-text"></i> 利用規約（透明）</h3>
-                <p>文字が薄すぎて読めませんが、同意が必要です。</p>
-                <div id="tb" style="height:200px;overflow-y:scroll;border:1px solid var(--border);padding:10px; background:white;">
-                    <p id="tt" style="color:white; transition:color 0.2s;">${t} ${t} ${t}</p>
+                <h3><i class="bi bi-file-text"></i> サービス利用規約</h3>
+                <p>以下の規約を全て読み、理解した上で同意してください。<br><small style="color:red;">※速読禁止機能付き</small></p>
+                <div id="tb" style="height:300px;overflow-y:scroll;border:2px solid var(--border);padding:15px; background:white;">
+                    <div id="tt" style="color:white; transition:color 0.2s;">
+                        ${content}
+                    </div>
                 </div>
                 <button class="mt-20" disabled>スクロール完了で有効化</button>
             `;
+            
+            let lastScrollY = 0;
             document.getElementById('tb').onscroll=function(){
+                let currentY = this.scrollTop;
+                // 速度制限ロジック: 一回のイベントで50px以上進んだらアウト
+                // (スマホの慣性スクロールなどで簡単に引っかかる仕様)
+                if(currentY - lastScrollY > 50) {
+                    showNotification("読む速度が速すぎます。本当に読んでいますか？最初からやり直してください。", "error");
+                    this.scrollTop = 0;
+                    lastScrollY = 0;
+                    return;
+                }
+                lastScrollY = currentY;
+
                 let p=this.scrollTop/(this.scrollHeight-this.clientHeight);
                 let v=Math.floor(255 - p*255); // 白から黒へ
                 document.getElementById('tt').style.color=`rgb(${v},${v},${v})`;
-                if(p>0.9){
-                    showNotification("規約を読む速度が速すぎます。最初からやり直してください。","error");
-                    this.scrollTop=0;
-                }
             }
         }
 
@@ -1140,6 +1357,7 @@
                 <h3><i class="bi bi-chat-dots"></i> サポートチャット</h3>
                 <p>お問い合わせ内容を入力してください（回線混雑中）</p>
                 <textarea id="slow-input" rows="4" placeholder="ここに入力..."></textarea>
+                <button onclick="showNotification('送信ボタンが逃亡しました。', 'error')">送信</button>
             `;
             const input = document.getElementById('slow-input');
             input.addEventListener('keydown', (e) => {
@@ -1155,14 +1373,16 @@
                 <h3><i class="bi bi-envelope"></i> お問い合わせ送信</h3>
                 <p>運試し送信フォーム</p>
                 <div class="input-group"><label>件名</label><input type="text"></div>
+                <!-- 入力欄追加 -->
+                <div class="input-group"><label>本文</label><textarea rows="3"></textarea></div>
                 <button onclick="russianRouletteSubmit()">送信する (成功率 1/6)</button>
             `;
         }
         function russianRouletteSubmit() {
             if(Math.random() > 0.83) {
-                showNotification("奇跡的に送信成功！", "success");
+                showNotification("奇跡的に送信成功！明日は雪が降るでしょう。", "success");
             } else {
-                gameArea.innerHTML += `<p style="color:var(--danger)">送信失敗。データは破棄されました。</p>`;
+                gameArea.innerHTML += `<p style="color:var(--danger)">送信失敗。サーバーが空腹のためデータを食べました。</p>`;
                 setTimeout(renderScenario18, 1500);
             }
         }
@@ -1174,7 +1394,8 @@
                 <div style="width:100px; height:100px; border:1px solid black; background:rgb(0,0,0); margin:0 auto 10px auto; border-radius:50%;" id="col-box"></div>
                 R: <input type="range" id="r" min="0" max="255" value="0" style="width:100%"><br>
                 G: <input type="range" id="g" min="0" max="255" value="0" style="width:100%"><br>
-                B: <input type="range" id="b" min="0" max="255" value="0" style="width:100%">
+                B: <input type="range" id="b" min="0" max="255" value="0" style="width:100%"><br>
+                <button onclick="showNotification('その色は現在在庫切れです。', 'error')">テーマを適用</button>
             `;
             const r=document.getElementById('r'), g=document.getElementById('g'), b=document.getElementById('b'), box=document.getElementById('col-box');
             function updateC(e) {
@@ -1197,7 +1418,7 @@
                 showNotification(`本当に終了しますか？ (確認 ${count+1}/5)`, "info");
                 setTimeout(() => confirmLoop(count+1), 600);
             } else {
-                showNotification("終了に失敗しました。", "error");
+                showNotification("エラー：終了プロセスを開始しましたが、迷子になりました。", "error");
             }
         }
 
@@ -1277,6 +1498,7 @@
                     </div>
                 </div>
                 <p>※マウスホイール/スワイプ無効<br><small>スマホの方はBluetoothキーボードを接続してください</small></p>
+                <button onclick="showNotification('最後まで読んでください（読めません）', 'error')">同意する</button>
             `;
             const area = document.getElementById('manual-scroll-area');
             const content = document.getElementById('scroll-content');
@@ -1294,8 +1516,531 @@
             });
         }
 
+        function renderScenario25() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-calculator"></i> 偽電卓</h3>
+                <p>計算結果を保証しません。</p>
+                <div class="calc-display" id="c-disp">0</div>
+                <div class="calc-grid" id="c-grid">
+                    ${[7,8,9,'/',4,5,6,'*',1,2,3,'-','C',0,'=','+'].map(b => 
+                        `<button class="calc-btn" onclick="calcInput('${b}')">${b}</button>`
+                    ).join('')}
+                </div>
+            `;
+        }
+
+        let calcExpr = "";
+        function calcInput(v) {
+            const d = document.getElementById('c-disp');
+            if(v === 'C') {
+                calcExpr = "";
+                d.innerText = "0";
+            } else if (v === '=') {
+                try {
+                    // 正しい計算結果に乱数を足して台無しにする
+                    let res = eval(calcExpr);
+                    let wrong = res + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 5 + 1);
+                    d.innerText = wrong;
+                    showNotification("計算完了（たぶん合ってます）", "info");
+                } catch(e) {
+                    d.innerText = "Error";
+                    showNotification("電卓が計算を拒否しました。", "error");
+                }
+                calcExpr = "";
+            } else {
+                calcExpr += v;
+                d.innerText = calcExpr;
+            }
+        }
+
+        function renderScenario26() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-alarm"></i> デジタル時計 (β版)</h3>
+                <p>時間の流れがおかしいかもしれません。</p>
+                <div class="clock-face" id="fake-clock">00:00:00</div>
+            `;
+            
+            let h = 12, m = 0, s = 0;
+            scenarioInterval = setInterval(() => {
+                // 秒がランダムに進む
+                s += Math.floor(Math.random() * 5);
+                if(s >= 60) { s %= 60; m++; }
+                if(m >= 60) { m %= 60; h++; }
+                if(h >= 24) h = 0;
+                
+                const timeStr = 
+                    String(h).padStart(2,'0') + ":" + 
+                    String(m).padStart(2,'0') + ":" + 
+                    String(s).padStart(2,'0');
+                
+                document.getElementById('fake-clock').innerText = timeStr;
+            }, 100); // 0.1秒ごとに更新（高速）
+        }
+
+        function renderScenario27() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-check2-square"></i> 人間確認</h3>
+                <p>ロボットでない場合はチェックを入れてください。</p>
+                <div style="height:300px; position:relative; border:1px solid #ccc; overflow:hidden;" id="box-area">
+                    <label id="moving-check" style="position:absolute; width:180px; padding:10px; background:#fff; border:1px solid black; cursor:pointer; user-select:none;">
+                        <input type="checkbox" onclick="event.preventDefault(); showNotification('エラー：チェックボックスが痛がっています。', 'error')"> ロボットではありません
+                    </label>
+                </div>
+            `;
+            const chk = document.getElementById('moving-check');
+            const area = document.getElementById('box-area');
+            
+            let x = 0, y = 0;
+            let dx = 8, dy = 8; // 高速移動
+
+            scenarioInterval = setInterval(() => {
+                if(!chk) return;
+                const maxX = area.clientWidth - chk.offsetWidth;
+                const maxY = area.clientHeight - chk.offsetHeight;
+
+                x += dx; y += dy;
+
+                if(x <= 0 || x >= maxX) { dx = -dx; chk.style.background = getRandomColor(); }
+                if(y <= 0 || y >= maxY) { dy = -dy; chk.style.background = getRandomColor(); }
+                
+                chk.style.left = x + 'px';
+                chk.style.top = y + 'px';
+            }, 20);
+        }
+        function getRandomColor() {
+            return `hsl(${Math.random()*360}, 80%, 90%)`;
+        }
+
+        function renderScenario28() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-keyboard-fill"></i> 逆再生フォーム</h3>
+                <p>入力した文字が逆順に反映されます。</p>
+                <div class="input-group">
+                    <label>メッセージ:</label>
+                    <input type="text" id="rev-in" placeholder="こんにちは -> はちにんこ">
+                </div>
+                <button onclick="showNotification('メッセージは無事に異次元へ送信されました。', 'success')">送信</button>
+            `;
+            const inp = document.getElementById('rev-in');
+            inp.addEventListener('input', (e) => {
+                let v = e.target.value;
+                let rev = v.split('').reverse().join('');
+                if(v !== rev) {
+                    inp.value = rev;
+                }
+            });
+        }
+
+        function renderScenario29() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-stopwatch"></i> ジャスト3秒待機</h3>
+                <p>ボタンを長押しして、ちょうど3.00秒で離してください。</p>
+                <button id="hold-btn" style="width:100%; height:100px; font-size:1.5rem;" onmousedown="startHold()" onmouseup="endHold()" ontouchstart="startHold()" ontouchend="endHold()">押してホールド</button>
+                <div id="hold-res" style="font-size:2rem; text-align:center; margin-top:20px;">0.00s</div>
+            `;
+        }
+        let holdStart = 0;
+        function startHold() {
+            holdStart = Date.now();
+            document.getElementById('hold-btn').innerText = "計測中...";
+            document.getElementById('hold-btn').style.background = "yellow";
+        }
+        function endHold() {
+            if(holdStart === 0) return;
+            let diff = (Date.now() - holdStart) / 1000;
+            document.getElementById('hold-res').innerText = diff.toFixed(2) + "s";
+            document.getElementById('hold-btn').innerText = "押してホールド";
+            document.getElementById('hold-btn').style.background = "var(--bg-color)";
+            
+            if(diff === 3.00) {
+                showNotification("奇跡です！完璧です！", "success");
+            } else {
+                let msg = diff < 3 ? "短すぎます。人生を急がないで。" : "長すぎます。時間は金なり。";
+                showNotification(`失敗: ${msg}`, "error");
+            }
+            holdStart = 0;
+        }
+
+        function renderScenario30() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-joystick"></i> 無理ゲーボール転がし</h3>
+                <p>デバイスを傾けて(PCなら念力で)ボールを穴に入れてください。</p>
+                <div class="balance-board" id="board">
+                    <div class="balance-hole" style="top:10px; left:10px;"></div>
+                    <div class="balance-ball" id="ball" style="top:200px; left:200px;"></div>
+                </div>
+            `;
+            const ball = document.getElementById('ball');
+            let bx = 200, by = 200;
+            let vx = 0, vy = 0;
+            
+            window.ondevicemotion = (e) => {
+                vx += e.accelerationIncludingGravity.x * 0.5;
+                vy -= e.accelerationIncludingGravity.y * 0.5; 
+            };
+            
+            document.getElementById('board').onmousemove = (e) => {
+                let rect = e.target.getBoundingClientRect();
+                let mx = e.clientX - rect.left;
+                let my = e.clientY - rect.top;
+                vx += (mx - bx) * 0.001;
+                vy += (my - by) * 0.001;
+            };
+
+            scenarioInterval = setInterval(() => {
+                if(!document.getElementById('ball')) return;
+                
+                bx += vx; by += vy;
+                
+                if(bx < 0 || bx > gameArea.clientWidth - 50) vx *= -0.8;
+                if(by < 0 || by > 220) vy *= -0.8;
+                
+                vx += (Math.random()-0.5);
+                vy += (Math.random()-0.5);
+
+                bx = Math.max(0, Math.min(bx, gameArea.clientWidth - 50));
+                by = Math.max(0, Math.min(by, 220));
+
+                ball.style.left = bx + "px";
+                ball.style.top = by + "px";
+                
+                if(bx < 40 && by < 40) {
+                    showNotification("不正な操作を検知しました。ゲームオーバー。", "error");
+                    bx = 200; by = 200; vx=0; vy=0;
+                }
+            }, 20);
+        }
+
+        // --- Improved & New Scenarios ---
+
+        function renderScenario31() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-card-image"></i> スクラッチ認証</h3>
+                <p>銀色の部分をこすって認証コードを表示してください。</p>
+                <div style="position:relative; width:300px; height:150px; margin:0 auto; overflow:hidden;">
+                    <div id="scratch-bg">Loading...</div>
+                    <canvas id="scratch-pad" width="300" height="150" style="position:absolute; top:0; left:0;"></canvas>
+                </div>
+                <div class="input-group mt-4">
+                    <label>コード入力:</label>
+                    <input type="text">
+                </div>
+                <button onclick="showNotification('コードが一致しません（そりゃそうです）', 'error')">認証</button>
+            `;
+            const cvs = document.getElementById('scratch-pad');
+            const bg = document.getElementById('scratch-bg');
+            const ctx = cvs.getContext('2d');
+            ctx.fillStyle = '#C0C0C0';
+            ctx.fillRect(0, 0, 300, 150);
+            
+            let isDrawing = false;
+            
+            // 動的に文字を変えて解読不能にする
+            const randomizeText = () => {
+                const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+                let str = "";
+                for(let i=0; i<6; i++) str += chars.charAt(Math.floor(Math.random() * chars.length));
+                bg.innerText = str;
+                bg.style.transform = `rotate(${Math.random()*10-5}deg) scale(${0.8+Math.random()*0.4})`;
+            };
+
+            const scratch = (x, y) => {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 15, 0, Math.PI * 2);
+                ctx.fill();
+                randomizeText(); // こするたびに文字が変わる
+            };
+
+            const getPos = (e) => {
+                const r = cvs.getBoundingClientRect();
+                return {
+                    x: (e.touches ? e.touches[0].clientX : e.clientX) - r.left,
+                    y: (e.touches ? e.touches[0].clientY : e.clientY) - r.top
+                };
+            };
+
+            cvs.onmousedown = (e) => { isDrawing = true; const p = getPos(e); scratch(p.x, p.y); };
+            cvs.ontouchstart = (e) => { isDrawing = true; const p = getPos(e); scratch(p.x, p.y); };
+            
+            cvs.onmousemove = (e) => { if(isDrawing) { const p = getPos(e); scratch(p.x, p.y); } };
+            cvs.ontouchmove = (e) => { if(isDrawing) { const p = getPos(e); scratch(p.x, p.y); } };
+            
+            cvs.onmouseup = () => isDrawing = false;
+            cvs.ontouchend = () => isDrawing = false;
+        }
+
+        function renderScenario32() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-mic"></i> 大声入力システム (Real)</h3>
+                <p>「開始」を押してマイク許可後、大声で叫んでください。</p>
+                <div class="voice-bar-container">
+                    <div class="voice-bar-fill" id="v-bar"></div>
+                </div>
+                <button id="mic-btn" onclick="toggleMic()"><i class="bi bi-mic-fill"></i> マイク入力開始</button>
+            `;
+        }
+        
+        async function toggleMic() {
+            const btn = document.getElementById('mic-btn');
+            if(audioContext) {
+                // 停止処理
+                if(micStream) micStream.getTracks().forEach(t => t.stop());
+                audioContext.close();
+                audioContext = null;
+                micStream = null;
+                btn.innerHTML = '<i class="bi bi-mic-fill"></i> マイク入力開始';
+                document.getElementById('v-bar').style.width = '0%';
+                if(animationFrameId) cancelAnimationFrame(animationFrameId);
+                return;
+            }
+
+            try {
+                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(micStream);
+                const analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                source.connect(analyser);
+
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                const bar = document.getElementById('v-bar');
+                
+                btn.innerHTML = '<i class="bi bi-stop-fill"></i> 停止 (叫べ！)';
+                btn.style.background = 'var(--danger)';
+                btn.style.color = 'white';
+
+                const updateVol = () => {
+                    if(!audioContext) return;
+                    analyser.getByteFrequencyData(dataArray);
+                    let sum = 0;
+                    for(let i=0; i<bufferLength; i++) sum += dataArray[i];
+                    let avg = sum / bufferLength;
+                    
+                    // 感度調整
+                    let width = Math.min(100, avg * 2); 
+                    bar.style.width = width + "%";
+                    
+                    if(width > 95) {
+                        // ランダムに理不尽なエラーを出す
+                        if(Math.random() > 0.95) {
+                            showNotification("うるさいです。近所迷惑です。", "error");
+                        }
+                    }
+                    animationFrameId = requestAnimationFrame(updateVol);
+                };
+                updateVol();
+
+            } catch(e) {
+                showNotification("マイクへのアクセスが拒否されました。心の声で叫んでください。", "error");
+            }
+        }
+
+        function renderScenario33() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-mirror"></i> 合わせ鏡パスワード</h3>
+                <p>文字が反転しています。頭を使って入力してください。</p>
+                <div class="input-group">
+                    <label class="mirror-text">パスワード:</label>
+                    <input type="text" class="mirror-input" placeholder="パスワード">
+                </div>
+                <button onclick="showNotification('パスワードが裏返しです。', 'error')">送信</button>
+            `;
+        }
+
+        function renderScenario34() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-box"></i> マトリョーシカ・ダイアログ</h3>
+                <p>ボタンを押してダイアログを開いてください。</p>
+                <button onclick="spawnMatryoshka(200, 200, 1)">開く</button>
+                <div id="modal-area" style="position:relative; height:300px; border:1px solid #ccc; overflow:hidden;"></div>
+            `;
+        }
+        function spawnMatryoshka(w, h, depth) {
+            if(depth > 10) {
+                showNotification("これ以上は小さすぎて見えません。", "info");
+                return;
+            }
+            const area = document.getElementById('modal-area');
+            const m = document.createElement('div');
+            m.className = 'matryoshka-modal';
+            m.style.width = w + 'px';
+            m.style.height = h + 'px';
+            m.style.left = (300 - w)/2 + 'px';
+            m.style.top = (300 - h)/2 + 'px';
+            m.style.zIndex = depth;
+            m.innerHTML = `<p>Level ${depth}</p><button onclick="this.parentElement.remove(); spawnMatryoshka(${w*0.8}, ${h*0.8}, ${depth+1})">閉じる</button>`;
+            area.appendChild(m);
+        }
+
+        function renderScenario35() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-arrow-down-square"></i> 重力ドロップダウン</h3>
+                <p>メニューを選んでください（急いで！）</p>
+                <div class="fake-select-box" onclick="dropOptions()">
+                    <span>選択してください...</span>
+                    <span>▼</span>
+                </div>
+                <div id="drop-area" style="position:relative; height:300px; border-top:1px solid black; margin-top:5px; overflow:hidden;"></div>
+            `;
+        }
+        function dropOptions() {
+            const area = document.getElementById('drop-area');
+            area.innerHTML = '';
+            const opts = ["選択肢 A", "選択肢 B", "選択肢 C", "選択肢 D", "選択肢 E"];
+            
+            opts.forEach((txt, i) => {
+                const el = document.createElement('div');
+                el.className = 'falling-option';
+                el.innerText = txt;
+                el.style.left = (i * 40) + "px";
+                el.style.top = "0px";
+                el.onclick = () => showNotification("床に落ちたものは衛生上選択できません。", "error");
+                area.appendChild(el);
+                
+                // 落下アニメーション
+                let y = 0;
+                let v = 0;
+                const fall = () => {
+                    v += 0.5; // 重力
+                    y += v;
+                    if(y > 260) { // 床でバウンド
+                        y = 260;
+                        v *= -0.6;
+                    }
+                    el.style.top = y + "px";
+                    if(Math.abs(v) > 0.1 || y < 260) requestAnimationFrame(fall);
+                };
+                requestAnimationFrame(fall);
+            });
+        }
+
+        function renderScenario36() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-eraser-fill"></i> 自動消滅フォーム</h3>
+                <p>セキュリティのため、3秒ごとに入力内容が破棄されます。</p>
+                <div class="input-group">
+                    <label>氏名:</label>
+                    <input type="text" class="vanishing-input">
+                </div>
+                <div class="input-group">
+                    <label>住所:</label>
+                    <input type="text" class="vanishing-input">
+                </div>
+                <button onclick="showNotification('データがありません', 'error')">急いで送信</button>
+            `;
+            scenarioInterval = setInterval(() => {
+                document.querySelectorAll('.vanishing-input').forEach(el => el.value = '');
+            }, 3000);
+        }
+
+        function renderScenario37() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-person-badge"></i> スロット・ジェンダー選択</h3>
+                <p>あなたの性別/肩書きで止めてください。</p>
+                <div style="font-size:2rem; font-weight:bold; border:4px solid black; padding:20px; text-align:center; background:white;" id="slot-disp">男性</div>
+                <button onclick="stopSlot()">ストップ！</button>
+                <input type="hidden" id="gender-val">
+            `;
+            const opts = ["男性", "女性", "その他", "宇宙人", "神", "無", "猫", "野菜"];
+            const disp = document.getElementById('slot-disp');
+            let idx = 0;
+            let spinning = true;
+            
+            const spin = () => {
+                if(!spinning) return;
+                idx = (idx + 1) % opts.length;
+                disp.innerText = opts[idx];
+                setTimeout(spin, 50); // 高速
+            };
+            spin();
+
+            window.stopSlot = () => {
+                spinning = false;
+                if(opts[idx] === "男性" || opts[idx] === "女性") {
+                    showNotification("ありきたりな選択です。やり直してください。", "error");
+                    setTimeout(() => { spinning = true; spin(); }, 1000);
+                } else {
+                    showNotification(`「${opts[idx]}」として登録しました。`, "success");
+                }
+            };
+        }
+
+        function renderScenario38() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-search"></i> 1ピクセル・ボタン</h3>
+                <p>画面内のどこかにある 1x1ピクセルの赤いボタンを押して進んでください。</p>
+                <div style="position:relative; width:100%; height:300px; border:1px solid #ccc;" id="pixel-area"></div>
+            `;
+            const btn = document.createElement('button');
+            btn.className = 'pixel-btn';
+            btn.style.left = Math.random() * 99 + "%";
+            btn.style.top = Math.random() * 99 + "%";
+            btn.onclick = () => showNotification("見つけましたね！暇人ですか？", "success");
+            document.getElementById('pixel-area').appendChild(btn);
+        }
+
+        function renderScenario39() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-keyboard"></i> 物理演算キーボード</h3>
+                <p>キーが重力で落ちてしまいます。</p>
+                <div class="input-group">
+                    <input type="text" id="phys-input" readonly placeholder="キーをクリック...">
+                </div>
+                <div id="keyboard-area" style="position:relative; height:250px; border-bottom:2px solid black; overflow:hidden;"></div>
+                <button onclick="showNotification('入力内容を理解できませんでした。', 'error')">確定</button>
+            `;
+            const keys = "QWERTYUIOPASDFGHJKLZXCVBNM".split('');
+            const area = document.getElementById('keyboard-area');
+            
+            keys.forEach((k, i) => {
+                const el = document.createElement('div');
+                el.className = 'physics-key';
+                el.innerText = k;
+                el.style.left = (i % 10) * 45 + "px";
+                el.style.top = Math.floor(i / 10) * 45 + "px";
+                
+                el.onclick = () => {
+                    document.getElementById('phys-input').value += k;
+                    // クリックすると落ちる
+                    let y = parseInt(el.style.top);
+                    let v = 0;
+                    const fall = () => {
+                        v += 1; y += v;
+                        el.style.top = y + "px";
+                        if(y < 300) requestAnimationFrame(fall);
+                    };
+                    fall();
+                };
+                area.appendChild(el);
+            });
+            
+            // 最初から全部ゆっくり落ちる
+            setTimeout(() => {
+                document.querySelectorAll('.physics-key').forEach(el => {
+                    let y = parseInt(el.style.top);
+                    let v = 0;
+                    const fall = () => {
+                        v += 0.1; y += v;
+                        el.style.top = y + "px";
+                        if(y < 300) requestAnimationFrame(fall);
+                    };
+                    requestAnimationFrame(fall);
+                });
+            }, 2000);
+        }
+
+        function renderScenario40() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-laptop"></i> 最終試練</h3>
+                <p>このボタンを押してシステムを完了させてください。</p>
+                <button onclick="document.getElementById('fake-bsod').style.display='block'" style="background:blue; color:white; width:100%; height:100px; font-size:2rem;">完了</button>
+            `;
+        }
+
         // ==========================================
-        // 共通: 跳ね回る要素ロジック (レスポンシブ対応)
+        // 共通: 跳ね回る要素ロジック
         // ==========================================
         function initBouncingButton(elementId, actionCallback) {
             const btn = document.getElementById(elementId);
