@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kusoUI - The Final Edition</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* テーマ設定 */
+        :root {
+            --bg-color: #f0f0f0;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --primary: #2196F3;
+            --danger: #F44336;
+            --success: #4CAF50;
+            --border: #cccccc;
+            --annoy-cursor: wait;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a;
+                --text-color: #d1d1d1;
+                --card-bg: #2b2b2b;
+                --primary: #bb86fc;
+                --danger: #cf6679;
+                --success: #03dac6;
+                --border: #555555;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: var(--annoy-cursor) !important;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Comic Neue', 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* タイトル */
+        h1 {
+            font-family: 'Comic Neue', sans-serif;
+            font-weight: 900;
+            font-size: 8rem;
+            letter-spacing: -2px;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 4px 4px 0px var(--danger), 8px 8px 0px rgba(0,0,0,0.2);
+            line-height: 1.1;
+            color: var(--text-color);
+        }
+
+        /* UI コンテナ */
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px 4px 30px 2px;
+            box-shadow: 8px 8px 0px var(--text-color);
+            width: 100%;
+            max-width: 600px;
+            border: 3px solid var(--border);
+            position: relative;
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        /* セレクター */
+        .scenario-selector {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        select {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 0;
+            border: 4px dashed var(--danger);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            outline: none;
+            font-weight: bold;
+        }
+
+        /* 共通ボタン */
+        button:not(.video-control):not(.notification-btn) {
+            font-family: inherit;
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 2px solid var(--text-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-weight: bold;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        button:active { transform: translate(2px, 2px); box-shadow: none; }
+
+        /* ユーティリティ */
+        .hidden { display: none !important; }
+        .mt-20 { margin-top: 20px; }
+        .text-center { text-align: center; }
+        .input-group { margin-bottom: 20px; border-bottom: 1px dotted var(--border); padding-bottom: 10px;}
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9em; }
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-color);
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+        }
+
+        /* カスタム通知 (Alert代替) */
+        .custom-notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #c0c0c0; /* Windows 95 gray */
+            border: 2px outset #ffffff;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+            padding: 2px;
+            z-index: 99999;
+            min-width: 300px;
+            font-family: 'Courier New', monospace;
+            color: black;
+        }
+        .notif-header {
+            background: navy;
+            color: white;
+            padding: 4px 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notif-body {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .notif-icon { font-size: 32px; color: red; }
+        .notif-footer {
+            text-align: center;
+            padding: 10px;
+        }
+        .notification-btn {
+            background: #c0c0c0;
+            border: 2px outset #ffffff;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            color: black;
+        }
+        .notification-btn:active { border: 2px inset #ffffff; }
+
+        /* シナリオ固有スタイル */
+        .phone-slider-val { font-size: 1.5rem; font-weight: bold; text-align: center; display: block; }
+        .runaway-area { height: 300px; position: relative; border: 1px solid var(--border); overflow: hidden; }
+        .confusing-buttons { display: flex; justify-content: space-between; flex-direction: row-reverse; }
+        .btn-green { background-color: var(--success) !important; color: white !important; width: 48%; border: none; }
+        .btn-red { background-color: var(--danger) !important; color: white !important; width: 48%; border: none; }
+        .progress-track { width: 100%; background: #ddd; height: 40px; border: 1px solid #000; }
+        .progress-fill { height: 100%; background: repeating-linear-gradient(45deg, var(--primary), var(--primary) 10px, var(--success) 10px, var(--success) 20px); width: 0%; transition: width 0.05s linear; }
+        
+        .bouncing-btn {
+            position: absolute;
+            background: var(--danger) !important;
+            color: white !important;
+            padding: 15px 30px;
+            border: 2px solid yellow !important;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* スイッチ地獄 */
+        .switch-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding: 10px; border: 1px solid var(--border); }
+        .toggle-switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .slider.round { border-radius: 34px; }
+        .slider.round:before { border-radius: 50%; }
+
+        /* 動画広告用スタイル */
+        .video-ad-container {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            background: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            border: 2px solid #333;
+        }
+        .ad-overlay-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 15px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            z-index: 10;
+        }
+        .app-info { display: flex; align-items: center; gap: 10px; }
+        .ad-content-center { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
+        .ad-overlay-bottom { padding: 15px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); z-index: 10; }
+        .ad-progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.3); border-radius: 3px; margin-bottom: 5px; overflow: hidden; }
+        .ad-progress-fill { height: 100%; background: white; width: 0%; border-radius: 3px; }
+
+        /* スキップボタンエリア */
+        .skip-area {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .skip-circle-svg { transform: rotate(-90deg); width: 40px; height: 40px; }
+        .skip-circle-bg { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 4; }
+        .skip-circle-progress { fill: none; stroke: white; stroke-width: 4; stroke-dasharray: 100; stroke-dashoffset: 100; stroke-linecap: round; }
+        
+        .skip-btn-final {
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            background: rgba(0,0,0,0.5); 
+            border: 2px solid white;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .skip-btn-final:hover { background: rgba(255,255,255,0.2); }
+
+        /* ローディングスピナー */
+        .loader { width: 60px; height: 60px; animation: rotate 1s linear infinite; }
+        .loader .path { stroke: #007bff; stroke-linecap: round; stroke-dasharray: 89 150; stroke-dashoffset: 0; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        /* 画像認証 */
+        .captcha-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 10px; }
+        .captcha-img { width: 100%; aspect-ratio: 1; background: #ddd; cursor: pointer; display:flex; align-items:center; justify-content:center; border: 1px solid transparent; }
+        .captcha-img.selected { border: 4px solid var(--primary); transform: scale(0.9); }
+
+        /* 邪魔なヘルプ */
+        .annoying-helper {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: yellow;
+            border: 2px solid black;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: black;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            pointer-events: auto;
+            z-index: 200;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 通知表示エリア -->
+    <div id="notification-area"></div>
+
+    <marquee scrollamount="25" style="background:red; color:yellow; font-weight:900; width:100%; font-size: 1.2rem; padding: 5px;">
+        ⚠ CRITICAL ERROR ⚠ YOUR SYSTEM IS OUTDATED ⚠ PLEASE INSTALL WINDOWS 95 ⚠
+    </marquee>
+
+    <h1>kusoUI</h1>
+
+    <div class="scenario-selector">
+        <select id="scenario-select" onchange="changeScenario()">
+            <option value="0" disabled selected>▼ シナリオを選択して苦痛を体験 ▼</option>
+            <!-- JSで選択肢を追加 -->
+        </select>
+    </div>
+
+    <div class="container" id="game-area">
+        <div class="text-center" style="padding-top: 150px;">
+            <h3 style="font-size: 2rem; font-weight: bold;">Welcome to Hell.</h3>
+            <p class="mt-4">UI/UXデザインの「アンチパターン」の博物館へようこそ。</p>
+            <p>全ての操作はストレスを最大化するように設計されています。</p>
+            <button onclick="showNotification('エラー：このボタンは飾りです。', 'error')" class="mt-4 text-xl"><i class="bi bi-play-fill"></i> 開始できない</button>
+        </div>
+    </div>
+
+    <!-- 跳ね回る広告 -->
+    <div class="ad-popup" id="ad-popup" onclick="event.stopPropagation(); showNotification('有料会員限定機能です。', 'info')" style="position:fixed; width:200px; height:150px; background:yellow; color:black; border:3px solid red; z-index:9000; padding:10px; font-weight:bold;">
+        <span style="float:right; cursor:pointer;">[x]</span>
+        <h4><i class="bi bi-gift-fill"></i> 当選!!</h4>
+        <p>100万円当たりました！<br>(クリックで受取)</p>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('game-area');
+        let animationFrameId = null; 
+        let adAnimationFrameId = null;
+        let scenarioInterval = null;
+
+        // シナリオ定義 (16個)
+        const scenarios = [
+            { id: 1, text: "Lv.1 電話番号スライダー" },
+            { id: 2, text: "Lv.2 跳ね回る同意ボタン" },
+            { id: 3, text: "Lv.3 逆心理アカウント削除" },
+            { id: 4, text: "Lv.4 不安になるダウンロード" },
+            { id: 5, text: "Lv.5 究極の融合フォーム" },
+            { id: 6, text: "Lv.6 手動誕生日ピッカー" },
+            { id: 7, text: "Lv.7 重力音量調節" },
+            { id: 8, text: "Lv.8 時空を超える日付スライダー" },
+            { id: 9, text: "Lv.9 絶対にONにできないスイッチ" },
+            { id: 10, text: "Lv.10 不可能なパスワード" },
+            { id: 11, text: "Lv.11 うざいポップアップ祭り (高速)" },
+            { id: 12, text: "Lv.12 現代のアプリ動画広告 (改)" },
+            { id: 13, text: "Lv.13 終わらない画像認証" },
+            { id: 14, text: "Lv.14 逃げるヘルプアシスタント" },
+            { id: 15, text: "Lv.15 消える利用規約" },
+            { id: 16, text: "Lv.16 終わらないアップデート" }
+        ];
+
+        const select = document.getElementById('scenario-select');
+        scenarios.forEach(s => {
+            let op = document.createElement('option');
+            op.value = s.id;
+            op.text = s.text;
+            select.appendChild(op);
+        });
+
+        // カスタム通知関数
+        function showNotification(msg, type = 'error') {
+            const area = document.getElementById('notification-area');
+            const notif = document.createElement('div');
+            notif.className = 'custom-notification';
+            
+            const title = type === 'error' ? 'Critical Error' : 'Information';
+            const icon = type === 'error' ? '<i class="bi bi-x-octagon-fill"></i>' : '<i class="bi bi-info-circle-fill" style="color:blue"></i>';
+
+            notif.innerHTML = `
+                <div class="notif-header">
+                    <span>${title}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background:grey; color:white; border:1px solid white; width:20px; height:20px; display:flex; align-items:center; justify-content:center;">x</button>
+                </div>
+                <div class="notif-body">
+                    <div class="notif-icon">${icon}</div>
+                    <div style="font-weight:bold;">${msg}</div>
+                </div>
+                <div class="notif-footer">
+                    <button class="notification-btn" onclick="this.parentElement.parentElement.remove()">OK</button>
+                </div>
+            `;
+            area.appendChild(notif);
+            setTimeout(() => { if(notif.parentNode) notif.remove(); }, 5000);
+        }
+
+        // 跳ね回る広告
+        function initBouncingAd() {
+            const ad = document.getElementById('ad-popup');
+            let x = Math.random() * (window.innerWidth - 200);
+            let y = Math.random() * (window.innerHeight - 150);
+            let dx = 2; let dy = 2;
+            const w = 200; const h = 150;
+
+            function animateAd() {
+                x += dx; y += dy;
+                if (x + w > window.innerWidth || x < 0) dx = -dx;
+                if (y + h > window.innerHeight || y < 0) dy = -dy;
+                ad.style.left = x + 'px'; ad.style.top = y + 'px';
+                adAnimationFrameId = requestAnimationFrame(animateAd);
+            }
+            animateAd();
+        }
+        initBouncingAd();
+
+        function changeScenario() {
+            if(animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+            if(scenarioInterval) { clearInterval(scenarioInterval); scenarioInterval = null; }
+            
+            // ヘルプアシスタント等の残留要素削除
+            document.querySelectorAll('.annoying-helper').forEach(el => el.remove());
+
+            const val = parseInt(document.getElementById('scenario-select').value);
+            gameArea.innerHTML = ''; 
+
+            switch(val) {
+                case 1: renderScenario1(); break;
+                case 2: renderScenario2(); break;
+                case 3: renderScenario3(); break;
+                case 4: renderScenario4(); break;
+                case 5: renderScenario5(); break;
+                case 6: renderScenario6(); break;
+                case 7: renderScenario7(); break;
+                case 8: renderScenario8(); break;
+                case 9: renderScenario9(); break;
+                case 10: renderScenario10(); break;
+                case 11: renderScenario11(); break;
+                case 12: renderScenario12(); break;
+                case 13: renderScenario13(); break;
+                case 14: renderScenario14(); break;
+                case 15: renderScenario15(); break;
+                case 16: renderScenario16(); break;
+            }
+        }
+
+        // --- Lv.1 - Lv.10 ---
+
+        function renderScenario1() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-person-lines-fill"></i> お客様情報の入力</h3>
+                <p>電話番号を入力してください。</p>
+                <div class="input-group">
+                    <label><i class="bi bi-telephone"></i> 電話番号:</label>
+                    <span id="phone-display" class="phone-slider-val">090-0000-0000</span>
+                    <input type="range" id="phone-slider" min="0" max="99999999999" value="9000000000" step="13">
+                    <p style="color:red; font-size:12px;">※セキュリティのため、数値は13ずつ増減します。</p>
+                </div>
+                <button onclick="showNotification('番号が間違っています。最初からやり直してください。', 'error')"><i class="bi bi-send"></i> 送信</button>
+            `;
+            const s = document.getElementById('phone-slider');
+            s.addEventListener('input', (e) => { 
+                let v = e.target.value.toString().padStart(11,'0'); 
+                document.getElementById('phone-display').textContent = v.substring(0,3)+'-'+v.substring(3,7)+'-'+v.substring(7,11); 
+            });
+        }
+
+        function renderScenario2() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-file-text"></i> 利用規約の同意</h3>
+                <p>本当に同意しますか？</p>
+                <p style="font-size:10px">※ボタンをクリックして同意を完了してください。</p>
+                <button id="bouncing-btn-2" class="bouncing-btn"><i class="bi bi-check-circle"></i> 同意する</button>
+            `;
+            initBouncingButton('bouncing-btn-2', () => showNotification('システムエラー: クリック判定に失敗しました。', 'error'));
+        }
+
+        function renderScenario3() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-person-x"></i> アカウント削除</h3>
+                <p style="color:var(--danger)">警告：この操作は元に戻せません。</p>
+                <div class="input-group">
+                    <label>削除する理由:</label>
+                    <label><input type="radio" name="reason" onclick="this.checked=false"> 使いにくい</label>
+                    <label><input type="radio" name="reason" checked> 私の使い方が悪い</label>
+                </div>
+                <div class="confusing-buttons mt-20">
+                    <button class="btn-red" onclick="showNotification('キャンセルしました（アカウントは維持されます）', 'info')"><i class="bi bi-trash"></i> 削除する</button>
+                    <button class="btn-green" onclick="showNotification('エラー: 削除権限がありません', 'error')"><i class="bi bi-arrow-return-left"></i> キャンセルして戻る</button>
+                </div>
+            `;
+        }
+
+        function renderScenario4() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-download"></i> ダウンロードセンター</h3>
+                <p>File: virus_checker.exe</p>
+                <button onclick="startDL()"><i class="bi bi-cloud-download"></i> ダウンロード開始</button>
+                <div class="progress-track mt-4"><div class="progress-fill" id="p-bar"></div></div>
+                <div id="dl-status">待機中...</div>
+            `;
+        }
+        function startDL() {
+            const bar = document.getElementById('p-bar'); 
+            const stat = document.getElementById('dl-status'); 
+            let w=0;
+            scenarioInterval = setInterval(() => { 
+                w += Math.random()*10 - 3; 
+                if(w<0)w=0; 
+                if(w>99){w=99.9;stat.innerText="99.9% - 残り時間: 計算中...";}
+                else stat.innerText=Math.floor(w)+"% 完了"; 
+                bar.style.width=w+"%"; 
+            }, 100);
+        }
+
+        function renderScenario5() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-pencil-square"></i> Ultimate Registration Form</h3>
+                <p style="color:red; font-size:12px;">※当サイトは厳格な全角原理主義を採用しています。</p>
+                <div class="input-group">
+                    <label>お名前 (入力すると消えます):</label>
+                    <input type="text" onblur="this.value=''" placeholder="名前">
+                </div>
+                <div class="input-group">
+                    <label>メールアドレス (全角のみ):</label>
+                    <input type="text" id="zm" placeholder="ｅｘａｍｐｌｅ＠ｇｍａｉｌ．ｃｏｍ">
+                </div>
+                <!-- Lv.8の機能を統合: 生年月日スライダー -->
+                <div class="input-group">
+                    <label><i class="bi bi-clock-history"></i> 生年月日 (スライダーで指定):</label>
+                    <div class="date-display" id="reg-date-disp" style="font-size: 1.5rem;">0001/1/1</div>
+                    <input type="range" id="reg-time-slider" min="0" max="740000" style="width:100%" value="0">
+                    <p style="font-size:10px;">範囲: 西暦1年 ～ 2025年</p>
+                </div>
+                <button id="bb5" class="bouncing-btn"><i class="bi bi-person-plus-fill"></i> 登録する</button>
+            `;
+            
+            // メールバリデーション
+            document.getElementById('zm').addEventListener('input',e=>{
+                if(/[a-zA-Z0-9]/.test(e.target.value)){
+                    e.target.value="";
+                    showNotification("不潔な半角文字を検知しました！直ちに削除しました。",'error');
+                }
+            });
+
+            // 日付スライダーロジック
+            document.getElementById('reg-time-slider').addEventListener('input', e => {
+                let d = new Date("0001-01-01");
+                d.setDate(d.getDate() + parseInt(e.target.value));
+                document.getElementById('reg-date-disp').innerText = d.toLocaleDateString();
+            });
+
+            // 跳ね回るボタン
+            initBouncingButton('bb5',()=>showNotification("サーバー応答なし: タイムアウトしました。",'error'));
+        }
+
+        function renderScenario6() { 
+            gameArea.innerHTML=`
+                <h3><i class="bi bi-calendar-date"></i> 生年月日を入力</h3>
+                <p>カレンダー機能が故障中のため、手動で合わせてください。</p>
+                <div class="date-display" id="ddisp">${new Date().toLocaleDateString()}</div>
+                <button onclick="changeD(-1)"><i class="bi bi-arrow-left"></i> 前日</button>
+            `; 
+        }
+        function changeD(n){ 
+            let d=new Date(document.getElementById('ddisp').innerText); 
+            d.setDate(d.getDate()+n); 
+            document.getElementById('ddisp').innerText=d.toLocaleDateString(); 
+        }
+
+        function renderScenario7() {
+            gameArea.innerHTML=`
+                <h3><i class="bi bi-volume-up"></i> 音量設定</h3>
+                <p>お好みの音量にスライダーを合わせてください。</p>
+                <div class="gravity-slider-container">
+                    <input type="range" orient="vertical" id="g-sl" style="height:200px; -webkit-appearance: slider-vertical;">
+                </div>
+                <div>Volume: <span id="gv">0</span>%</div>
+            `;
+            const s=document.getElementById('g-sl'),v=document.getElementById('gv'); 
+            s.addEventListener('input',e=>v.innerText=e.target.value);
+            scenarioInterval=setInterval(()=>{
+                if(document.body.contains(s)&&s.value>0){
+                    s.value-=2;v.innerText=s.value;
+                }
+            },100);
+        }
+
+        function renderScenario8() { 
+            gameArea.innerHTML=`
+                <h3><i class="bi bi-clock-history"></i> 生年月日入力フォーム 2.0</h3>
+                <p>スライダーを動かして正確な生年月日を指定してください。</p>
+                <div class="date-display" id="tdisp">0001/1/1</div>
+                <input type="range" id="tsl" min="0" max="740000" style="width:100%">
+            `; 
+            document.getElementById('tsl').addEventListener('input',e=>{
+                let d=new Date("0001-01-01");
+                d.setDate(d.getDate()+parseInt(e.target.value));
+                document.getElementById('tdisp').innerText=d.toLocaleDateString();
+            }); 
+        }
+
+        function renderScenario9() { 
+            gameArea.innerHTML=`<h3><i class="bi bi-sliders"></i> オプション設定</h3><p>全てのスイッチをONにすると完了です。</p><div id="swc"></div>`; 
+            for(let i=0;i<10;i++) document.getElementById('swc').innerHTML+=`
+                <div class="switch-row">
+                    <span><i class="bi bi-gear-fill"></i> 設定 #${i+1}</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sw${i}" onchange="toggleSW(${i})">
+                        <span class="slider round"></span>
+                    </label>
+                </div>`; 
+        }
+        function toggleSW(i){ 
+            for(let k=0;k<3;k++){
+                let t=Math.floor(Math.random()*10);
+                if(t!=i) document.getElementById(`sw${t}`).click();
+            } 
+        }
+
+        function renderScenario10() { 
+            gameArea.innerHTML=`
+                <h3><i class="bi bi-shield-lock"></i> パスワード設定</h3>
+                <p>強力なパスワードを作成してください。</p>
+                <input type="text" id="ip" placeholder="入力...">
+                <div id="ie" style="color:red; font-weight:bold; margin-top:5px;"></div>
+            `; 
+            document.getElementById('ip').addEventListener('input',e=>{
+                let v=e.target.value,r=document.getElementById('ie');
+                if(v.length<5)r.innerText="エラー: 短すぎます。";
+                else if(!v.includes("★"))r.innerText="エラー: 「★」を含める必要があります。";
+                else r.innerText="エラー: パスワードが脆弱です。";
+            }); 
+        }
+
+        // --- Lv.11: ポップアップ祭り ---
+        function renderScenario11() {
+            gameArea.innerHTML = `<h3><i class="bi bi-window-stack"></i> 記事閲覧中...</h3><p>コンテンツを読み込んでいます...</p><p>Lorem ipsum dolor sit amet...</p>`;
+            let count = 0;
+            scenarioInterval = setInterval(() => {
+                if(count > 20) { clearInterval(scenarioInterval); return; }
+                let div = document.createElement('div');
+                div.style.cssText = `position:absolute; left:${Math.random()*300}px; top:${Math.random()*300}px; width:200px; background:white; border:2px solid black; padding:10px; z-index:${100+count}; box-shadow:5px 5px 0 rgba(0,0,0,0.2);`;
+                div.innerHTML = `<strong>広告 ${count+1}</strong><br>クリックして消す<br><button onclick="this.parentElement.remove()"><i class="bi bi-x"></i> 閉じる</button>`;
+                gameArea.appendChild(div);
+                count++;
+            }, 200); 
+        }
+
+        // --- Lv.12: 現代のアプリ動画広告 ---
+        function renderScenario12() {
+            gameArea.innerHTML = `
+                <div class="video-ad-container">
+                    <div class="ad-overlay-top">
+                        <div class="app-info">
+                            <i class="bi bi-controller" style="font-size:24px;"></i>
+                            <div><strong>KusoGame</strong><br><small>Ad</small></div>
+                        </div>
+                        <div class="skip-area" id="skip-container"></div>
+                    </div>
+                    <div class="ad-content-center">
+                        <svg class="loader" viewBox="0 0 50 50">
+                            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                        </svg>
+                        <div style="position:absolute; bottom:20px; font-weight:bold;">Video Playing...</div>
+                    </div>
+                    <div class="ad-overlay-bottom">
+                        <div class="ad-progress-bar">
+                            <div class="ad-progress-fill" id="vid-prog"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span id="vid-time">0:00</span><span>0:10</span>
+                        </div>
+                    </div>
+                </div>`;
+            
+            const skipContainer = document.getElementById('skip-container');
+            const progBar = document.getElementById('vid-prog');
+            const timeTxt = document.getElementById('vid-time');
+            let duration = 10000; 
+            let start = null;
+
+            function updateVideo(timestamp) {
+                if(!start) start = timestamp;
+                let elapsed = timestamp - start;
+                let pct = (elapsed / duration) * 100;
+                
+                if (pct <= 100) {
+                    progBar.style.width = pct + "%";
+                    let sec = Math.floor(elapsed / 1000);
+                    timeTxt.innerText = "0:" + sec.toString().padStart(2, '0');
+                    animationFrameId = requestAnimationFrame(updateVideo);
+                } else {
+                    progBar.style.width = "100%";
+                    timeTxt.innerText = "0:10";
+                    startSkipPhase(skipContainer);
+                }
+            }
+            animationFrameId = requestAnimationFrame(updateVideo);
+        }
+
+        function startSkipPhase(container) {
+            let timeLeft = 5;
+            container.innerHTML = `
+                <div style="position:relative; width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
+                    <svg class="skip-circle-svg" viewBox="0 0 40 40">
+                        <circle class="skip-circle-bg" cx="20" cy="20" r="16"></circle>
+                        <circle class="skip-circle-progress" id="skip-ring" cx="20" cy="20" r="16" stroke-linecap="round"></circle>
+                    </svg>
+                    <span id="skip-num" style="position:absolute; font-weight:bold; font-size:14px;">${timeLeft}</span>
+                </div>`;
+            const ring = document.getElementById('skip-ring');
+            const num = document.getElementById('skip-num');
+            
+            let start = null;
+            function updateSkip(timestamp) {
+                if(!start) start = timestamp;
+                let elapsed = timestamp - start;
+                let current = 5 - (elapsed / 1000);
+                
+                if(current > 0) {
+                    let offset = 100 - ((5 - current) / 5 * 100);
+                    ring.style.strokeDashoffset = offset;
+                    num.innerText = Math.ceil(current);
+                    animationFrameId = requestAnimationFrame(updateSkip);
+                } else {
+                    container.innerHTML = `<div class="skip-btn-final"><i class="bi bi-x"></i></div>`;
+                    container.querySelector('.skip-btn-final').onclick = () => showNotification("通信エラー: 広告サーバーとの通信に失敗しました。スキップできません。", "error");
+                }
+            }
+            animationFrameId = requestAnimationFrame(updateSkip);
+        }
+
+        // --- Lv.13 - Lv.16 ---
+        function renderScenario13() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-shield-check"></i> セキュリティチェック</h3>
+                <p>「信号機」のタイルをすべて選択してください。</p>
+                <div class="captcha-grid" id="cg"></div>
+                <button onclick="genCap()" class="mt-4"><i class="bi bi-arrow-clockwise"></i> 更新</button>
+                <button onclick="showNotification('不正解です。もう一度試してください。','error')" style="background:var(--primary);color:white">確認</button>
+            `;
+            genCap();
+        }
+        function genCap() { 
+            document.getElementById('cg').innerHTML=''; 
+            for(let i=0;i<9;i++){
+                let d=document.createElement('div');
+                d.className='captcha-img';
+                // ランダムなアイコン
+                const icons = ['bi-stoplights', 'bi-bicycle', 'bi-bus-front', 'bi-fire-hydrant'];
+                const icon = icons[Math.floor(Math.random() * icons.length)];
+                d.innerHTML=`<i class="bi ${icon}" style="font-size:32px;"></i>`;
+                d.onclick=()=>d.classList.toggle('selected');
+                document.getElementById('cg').appendChild(d);
+            } 
+        }
+
+        function renderScenario14() {
+            gameArea.innerHTML = `<h3><i class="bi bi-question-circle"></i> ヘルプ＆サポート</h3><p>何かお困りですか？アシスタントがお手伝いします。<br>アシスタントをクリックして質問してください。</p>`;
+            spawnHelper();
+        }
+        function spawnHelper() {
+            let h=document.createElement('div');
+            h.className='annoying-helper';
+            h.innerHTML='<i class="bi bi-question-lg"></i> Help?';
+            gameArea.appendChild(h);
+            let tx=0,ty=0,x=0,y=0;
+            gameArea.onmousemove=e=>{
+                let r=gameArea.getBoundingClientRect();
+                tx=e.clientX-r.left-40;
+                ty=e.clientY-r.top-40;
+            };
+            scenarioInterval=setInterval(()=>{
+                if(!h.parentElement)return;
+                x+=(tx-x)*0.05; y+=(ty-y)*0.05;
+                h.style.left=x+'px'; h.style.top=y+'px';
+            },20);
+            h.onclick=e=>{e.stopPropagation();showNotification("アシスタントが増えました！", "info");spawnHelper();}
+        }
+
+        function renderScenario15() {
+            let t="第1条 乙は甲に服従する。"; for(let i=0;i<100;i++) t+="同意せよ。";
+            gameArea.innerHTML=`
+                <h3><i class="bi bi-file-text"></i> 利用規約</h3>
+                <div id="tb" style="height:200px;overflow-y:scroll;border:1px solid black;padding:10px;">
+                    <p id="tt" style="color:black; transition:color 0.2s;">${t}</p>
+                </div>
+                <button class="mt-20" disabled>一番下まで読むと有効化</button>
+            `;
+            document.getElementById('tb').onscroll=function(){
+                let p=this.scrollTop/(this.scrollHeight-this.clientHeight);
+                let v=Math.floor(p*255);
+                document.getElementById('tt').style.color=`rgb(${v},${v},${v})`;
+                if(p>0.9){
+                    showNotification("規約を正しく読んでいない可能性があります。","error");
+                    this.scrollTop=0;
+                }
+            }
+        }
+
+        function renderScenario16() {
+            gameArea.innerHTML = `
+                <h3><i class="bi bi-windows"></i> システム更新</h3>
+                <p>コンピュータの電源を切らないでください</p>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width:0%" id="upd-bar"></div>
+                </div>
+                <div id="upd-txt">0%</div>
+            `;
+            let p = 0;
+            scenarioInterval = setInterval(() => {
+                if(p < 99) p += 0.1;
+                document.getElementById('upd-bar').style.width = p + "%";
+                document.getElementById('upd-txt').innerText = Math.floor(p) + "%";
+            }, 100);
+        }
+
+        // ==========================================
+        // 共通: 跳ね回る要素ロジック
+        // ==========================================
+        function initBouncingButton(elementId, actionCallback) {
+            const btn = document.getElementById(elementId);
+            if(!btn) return;
+            const container = document.getElementById('game-area');
+
+            let x = Math.random() * (container.clientWidth - 150);
+            let y = Math.random() * (container.clientHeight - 80);
+            let dx = 3; let dy = 3;
+
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                actionCallback();
+            };
+
+            function animate() {
+                if(!document.getElementById(elementId)) return;
+                const contW = container.clientWidth;
+                const contH = container.clientHeight;
+                const btnW = btn.offsetWidth;
+                const btnH = btn.offsetHeight;
+
+                x += dx; y += dy;
+                if (x + btnW > contW || x < 0) { dx = -dx; btn.style.borderColor = `hsl(${Math.random()*360},70%,50%)`; }
+                if (y + btnH > contH || y < 0) { dy = -dy; }
+                
+                btn.style.left = x + 'px';
+                btn.style.top = y + 'px';
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+    </script>
+</body>
+</html>
