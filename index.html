@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>kusoUI - The Final Edition Ver.8.3</title>
+    <title>kusoUI - The Final Edition Ver.9.0 (No Escape)</title>
     <!-- Google Fonts: ふざけたフォント -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -639,6 +639,34 @@
     </div>
 
     <script>
+        // ==========================================
+        // ブラウザバック封じ (History Trap)
+        // ==========================================
+        function activateHistoryTrap() {
+            // 現在の履歴をプッシュして「戻る」先を現在地に固定
+            history.pushState(null, null, location.href);
+            window.addEventListener('popstate', (event) => {
+                // 戻るボタンが押されたら即座に履歴を追加しなおす
+                history.pushState(null, null, location.href);
+                // 嫌味な通知を表示
+                showNotification('エラー：ここから逃げることは許されません。', 'error');
+            });
+        }
+
+        // ユーザーが何らかの操作（クリックなど）を行った最初のタイミングで発動
+        // (近年のブラウザはユーザー操作なしでのHistory API乱用を防ぐため)
+        document.addEventListener('click', () => {
+            activateHistoryTrap();
+        }, { once: true });
+        
+        // 念のため読み込み時にも試行
+        window.addEventListener('load', () => {
+             history.pushState(null, null, location.href);
+        });
+
+        // ==========================================
+        // メインロジック
+        // ==========================================
         const gameArea = document.getElementById('game-area');
         let animationFrameId = null; 
         let adAnimationFrameId = null;
