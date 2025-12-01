@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>kusoUI - The Final Edition Ver.9.0 (No Escape)</title>
+    <title>kusoUI - The Final Edition Ver.10.0 (Eternal Prison)</title>
     <!-- Google Fonts: ふざけたフォント -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -640,26 +640,71 @@
 
     <script>
         // ==========================================
-        // ブラウザバック封じ (History Trap)
+        // ブラウザバック封じ & タブ離脱防止 (Eternal Prison Mode)
         // ==========================================
-        function activateHistoryTrap() {
-            // 現在の履歴をプッシュして「戻る」先を現在地に固定
+        function activatePrisonMode() {
+            // 1. History API Trap (バックボタン封じ)
             history.pushState(null, null, location.href);
             window.addEventListener('popstate', (event) => {
-                // 戻るボタンが押されたら即座に履歴を追加しなおす
                 history.pushState(null, null, location.href);
-                // 嫌味な通知を表示
                 showNotification('エラー：ここから逃げることは許されません。', 'error');
+            });
+
+            // 2. Before Unload Trap (閉じる/リロード防止の確認ダイアログ)
+            window.addEventListener('beforeunload', (e) => {
+                e.preventDefault();
+                // 多くのモダンブラウザではメッセージは無視されますが、ダイアログは出ます
+                e.returnValue = '本当に私の元を去るのですか？'; 
+                return '本当に私の元を去るのですか？'; 
+            });
+
+            // 3. Tab Visibility Trap (タブ切り替え・最小化検知)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // タブが隠れた瞬間、タイトルを点滅させて罪悪感を煽る
+                    document.title = "😭😭😭 戻ってきて！！！ 😭😭😭";
+                    
+                    // ※注: バックグラウンドでの音声再生はブラウザにブロックされることが多いですが、
+                    // 許可されている場合はここで再生することも可能です。
+                } else {
+                    // 戻ってきた瞬間
+                    document.title = "kusoUI - The Final Edition Ver.10.0 (Eternal Prison)";
+                    showNotification("浮気ですか？傷つきました。", "error");
+                    // 罰として不快な音を鳴らす（AudioContextがアクティブな場合）
+                    playPunishmentSound();
+                }
+            });
+
+            // 4. Mouse Leave Trap (マウスが画面外＝タブの方へ行った時)
+            document.addEventListener('mouseleave', () => {
+                 showNotification("どこへ行くつもりですか？逃げられませんよ。", "error");
             });
         }
 
-        // ユーザーが何らかの操作（クリックなど）を行った最初のタイミングで発動
-        // (近年のブラウザはユーザー操作なしでのHistory API乱用を防ぐため)
+        // 罰ゲームサウンド（ビープ音）
+        function playPunishmentSound() {
+            if(!window.AudioContext) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.value = 150; // 低い不快な音
+                gain.gain.value = 0.1;
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                setTimeout(() => { osc.stop(); ctx.close(); }, 300);
+            } catch(e) {}
+        }
+
+        // ユーザーが何らかの操作を行った最初のタイミングで発動
+        // (近年のブラウザはユーザー操作なしでのAPI乱用を防ぐため)
         document.addEventListener('click', () => {
-            activateHistoryTrap();
+            activatePrisonMode();
         }, { once: true });
         
-        // 念のため読み込み時にも試行
+        // 念のため読み込み時にもHistoryだけは試行
         window.addEventListener('load', () => {
              history.pushState(null, null, location.href);
         });
